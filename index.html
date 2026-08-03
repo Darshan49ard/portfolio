@@ -29,7 +29,7 @@
   <nav class="site-header">
     <div class="nav-logo">
       <a href="index.html">
-        <img src="assets/images/logo.png" alt="logo" width="314" height="60">
+        <img src="portfolio\images\logo.jpeg" alt="logo" width="314" height="60">
       </a>
     </div>
     <button class="hamburger"><img src="assets/images/menu.png" alt="menu toggle icon"></button>
@@ -88,7 +88,7 @@
         data-aos="fade-up-left"
         data-aos-duration="1500"
         >
-          <img src="assets/images/headshot.jpg" alt="Darshan AR headshot">
+          <img src="" alt="Darshan AR headshot">
         </div>
       </div>
     </div>
@@ -98,8 +98,8 @@
     <p class="center protosem-intro">Weekly project seminar log — tasks, assignments and photos updated week by week (Week 0 to Week 20).</p>
     <div class="content protosem-wrap">
       <div class="protosem-nav" id="protosemNav">
-        <button type="button" class="week-btn active" data-week="0">Week 0</button>
-        <button type="button" class="week-btn" data-week="1">Week 1</button>
+        <button type="button" class="week-btn active" data-week="0" data-open="0th week/Untitleddocument.html">Week 0</button>
+        <button type="button" class="week-btn" data-week="1" data-open="1st week/Untitleddocument.html">Week 1</button>
         <button type="button" class="week-btn" data-week="2">Week 2</button>
         <button type="button" class="week-btn" data-week="3">Week 3</button>
         <button type="button" class="week-btn" data-week="4">Week 4</button>
@@ -124,7 +124,7 @@
         <div class="week-panel active" id="week-0">
           <h3>Week 0</h3>
           <div class="week-notes">
-            <p class="placeholder-text">.</p>
+            <p class="placeholder-text">"C:\Users\darsh\OneDrive\Desktop\0th week".</p>
           </div>
           <div class="week-photos">
             <div class="photo-slot"><span>Photo</span></div>
@@ -363,7 +363,9 @@
       nav.addEventListener('click', function(e){
         var target = e.target.closest('.week-btn');
         if (!target) return;
+
         var week = target.getAttribute('data-week');
+        var openPath = target.getAttribute('data-open');
 
         var activeBtn = nav.querySelector('.week-btn.active');
         if (activeBtn) activeBtn.classList.remove('active');
@@ -372,6 +374,10 @@
         var activePanel = panels.querySelector('.week-panel.active');
         if (activePanel) activePanel.classList.remove('active');
         document.getElementById('week-' + week).classList.add('active');
+
+        if (openPath) {
+          window.open(openPath, '_blank');
+        }
       });
     })();
   </script>
@@ -440,11 +446,11 @@
     <div class="content portfolio--content">
       <div class="item">
         <h3>2D LiDAR Conversion into 3D LiDAR</h3>
-        <img src="assets/images/project-lidar.png" alt="2D to 3D LiDAR conversion project">
+        <img src="" alt="2D to 3D LiDAR conversion project">
       </div><!-- item -->
       <div class="item">
         <h3>AGV Forklift (Ongoing)</h3>
-        <img src="assets/images/project-agv.png" alt="AGV forklift project">
+        <img src="portfolio\images\WhatsApp Image 2026-07-31 at 10.32.4AM.jpeg" alt="AGV forklift project">
       </div><!-- item -->
     </div>
   </section><!-- portfolio -->
