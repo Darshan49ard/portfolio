@@ -1,0 +1,259 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Week 2 – From Ideas to Applications</title>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --panel: rgba(255,255,255,0.96);
+      --text: #1f2937;
+      --muted: #5a687a;
+      --accent: #2563eb;
+      --accent-2: #0ea5e9;
+      --line: #e5e7eb;
+      --shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+      --soft-blue: #eaf2ff;
+      --soft-green: #eafaf3;
+      --soft-gold: #fff7df;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(135deg, #edf4ff 0%, #f7fafc 100%);
+      color: var(--text);
+    }
+    .page {
+      max-width: 1200px;
+      margin: 36px auto;
+      padding: 34px 30px 48px;
+      background: var(--panel);
+      border: 1px solid rgba(255,255,255,0.8);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+    }
+    .hero {
+      border-bottom: 2px solid var(--line);
+      padding-bottom: 18px;
+      margin-bottom: 26px;
+    }
+    .eyebrow {
+      margin: 0 0 10px;
+      font-size: 12px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 700;
+    }
+    h1 {
+      margin: 0;
+      font-size: clamp(2.3rem, 3.4vw, 3.6rem);
+      line-height: 1.08;
+      font-style: italic;
+      font-weight: 700;
+      text-decoration: underline;
+      text-decoration-thickness: 2px;
+      text-underline-offset: 10px;
+      color: #111827;
+    }
+    .intro {
+      margin-top: 18px;
+      font-size: 1.08rem;
+      line-height: 1.8;
+      color: var(--muted);
+      max-width: 930px;
+    }
+    .content-grid {
+      display: grid;
+      grid-template-columns: 1.24fr 0.76fr;
+      gap: 22px;
+      margin-top: 28px;
+    }
+    .panel, .highlight, .photo-card, .reflection, .feature-box {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      overflow: hidden;
+    }
+    .panel {
+      padding: 22px 20px;
+    }
+    .panel ul {
+      margin: 0;
+      padding-left: 22px;
+      line-height: 2;
+      font-size: 1rem;
+      color: var(--text);
+    }
+    .highlight {
+      padding: 22px 20px;
+      background: linear-gradient(135deg, rgba(37,99,235,0.06), rgba(14,165,233,0.08));
+    }
+    .highlight h3 {
+      margin: 0 0 12px;
+      color: var(--accent);
+      font-size: 1.08rem;
+    }
+    .highlight p {
+      margin: 0;
+      line-height: 1.8;
+      color: var(--text);
+    }
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(180px, 1fr));
+      gap: 18px;
+      margin-top: 26px;
+    }
+    .photo-card {
+      box-shadow: 0 12px 20px rgba(15, 23, 42, 0.05);
+    }
+    .photo-card .image {
+      width: 100%;
+      height: 240px;
+      display: block;
+      object-fit: cover;
+      border-bottom: 1px solid var(--line);
+      background-color: #e5e7eb;
+    }
+    .photo-card figcaption {
+      padding: 12px 14px 16px;
+      font-size: 0.92rem;
+      line-height: 1.5;
+      color: var(--muted);
+      background: #fff;
+    }
+    .feature-box {
+      margin-top: 28px;
+      padding: 18px 20px;
+      background: linear-gradient(135deg, rgba(14,165,233,0.05), rgba(20,184,166,0.06));
+    }
+    .feature-box h2 {
+      margin: 0 0 12px;
+      font-size: 1.7rem;
+      color: #111827;
+    }
+    .reflection {
+      margin-top: 28px;
+      padding: 22px 20px;
+      background: linear-gradient(135deg, rgba(14,165,233,0.05), rgba(20,184,166,0.06));
+    }
+    p {
+      margin: 0 0 18px;
+      font-size: 1.02rem;
+      line-height: 1.85;
+      color: var(--text);
+      text-align: justify;
+    }
+    @media (max-width: 820px) {
+      .page { margin: 18px 12px; padding: 24px 16px 32px; }
+      .content-grid, .gallery { grid-template-columns: 1fr; }
+      p { font-size: 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="hero">
+      <p class="eyebrow">Week 2</p>
+      <h1>From Ideas to Applications: Coding, Design, and Building</h1>
+      <p class="intro">
+        This week marked a shift from structure and workplace discipline to creativity, design thinking, and practical
+        problem-solving. Through lectures, interactive activities, and small hands-on tasks, I began to connect ideas
+        with real-world application and saw how innovation can emerge from constraints, teamwork, and curiosity.
+      </p>
+    </header>
+
+    <section class="content-grid">
+      <div class="panel">
+        <ul>
+          <li>Learned about frugal innovation and how limited resources can still create meaningful solutions.</li>
+          <li>Participated in the GIE Rubrics Evaluation, which strengthened observation, critical thinking, and teamwork.</li>
+          <li>Explored design thinking and coding basics to improve problem-solving and creative confidence.</li>
+          <li>Started turning simple ideas into structured and practical applications.</li>
+        </ul>
+      </div>
+
+      <div class="highlight">
+        <h3>Big takeaway</h3>
+        <p>
+          Real innovation is not about having more tools or resources — it is about using ideas, discipline, and creativity
+          effectively to solve the right problem.
+        </p>
+      </div>
+    </section>
+
+    <section class="gallery" aria-label="Week 2 highlights">
+      <figure class="photo-card">
+        <img class="image" src="week2 pic 1.jpg" alt="Week 2 classroom session with presentation" />
+        <figcaption>Week 2 classroom session with the presentation and team discussion.</figcaption>
+      </figure>
+      <figure class="photo-card">
+        <img class="image" src="week2 pic2.jpg" alt="GIE Rubrics Evaluation activity" />
+        <figcaption>Hands-on teamwork through the GIE Rubrics Evaluation and structured problem-solving activity.</figcaption>
+      </figure>
+      <figure class="photo-card">
+        <img class="image" src="week2 pic3.jpg" alt="Students listening to the lecture" />
+        <figcaption>Students focused on the lecture and design-thinking discussion during the session.</figcaption>
+      </figure>
+      <figure class="photo-card">
+        <img class="image" src="week2 pic4.jpg" alt="Idea wall and brainstorming notes" />
+        <figcaption>The brainstorming wall where ideas and reflections were visualized and discussed.</figcaption>
+      </figure>
+      <figure class="photo-card">
+        <img class="image" src="week2 pic 5.jpg" alt="Final week 2 workshop reflection" />
+        <figcaption>Final reflection moments from the Week 2 workshop and collaborative learning experience.</figcaption>
+      </figure>
+    </section>
+
+    <div class="feature-box">
+      <h2>Day 1: Frugal Innovation and Team Building</h2>
+    </div>
+
+    <div class="reflection">
+      <p>
+        The week began with an auditorium session led by Prof. Mukesh Sud, who spoke about his book, Lean Spark: Frugal by
+        Design, Global in Impact. His talk highlighted how innovation often arises not from abundance, but from constraints,
+        creativity, and disciplined thinking. The session gave me a fresh perspective on how resourcefulness and design can
+        lead to meaningful solutions in real life.
+      </p>
+      <p>
+        In the afternoon, we took part in the GIE Rubrics Evaluation. This activity pushed us to observe patterns, think
+        critically, and work together as a team while evaluating quality, structure, and performance criteria. It was a
+        practical reminder that problem-solving is not only about individual intelligence, but also about collaboration,
+        communication, and staying calm under pressure.
+      </p>
+      <p>
+        The combination of the lecture and the activity made the day very valuable. It helped me understand that innovation is
+        rooted not only in technical expertise but also in mindset, creativity, and teamwork. By the end of the day, I had a
+        clearer idea of how ideas can become structured solutions when supported by good thinking and strong cooperation.
+      </p>
+    </div>
+
+    <div class="feature-box">
+      <h2>Day 2–5: Design Thinking and Creative Execution</h2>
+    </div>
+
+    <div class="reflection">
+      <p>
+        As the week progressed, the focus moved toward design thinking and project-based learning. We worked on tasks that
+        required us to organize our ideas, approach problems in a systematic way, and think about how concepts can be shaped
+        into useful applications. This helped me move beyond passive learning and begin understanding the process of turning
+        an idea into a practical outcome.
+      </p>
+      <p>
+        The sessions reinforced the importance of structured thinking. Instead of jumping directly to a solution, we learned to
+        observe, analyze, test, and refine our approach. This mindset is especially useful in engineering and innovation, where
+        clear reasoning and iterative improvement are essential for success.
+      </p>
+      <p>
+        By the end of the week, I felt more confident in my ability to think creatively while still staying disciplined and
+        structured. It was a week of learning that balanced concept-building with practical execution, and it gave me a strong
+        foundation for the weeks ahead.
+      </p>
+    </div>
+  </div>
+</body>
+</html>

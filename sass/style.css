@@ -366,6 +366,26 @@ h2.center{ margin-left: auto; margin-right: auto; }
   background: var(--paper);
 }
 
+.open-week-btn{
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 16px;
+  margin: 18px 0 20px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--ink);
+  font-family: var(--label);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all .2s ease;
+}
+.open-week-btn:hover{
+  background: rgba(23,20,15,0.05);
+  border-color: var(--ink-soft);
+}
+
 /* week panels — only the active one shows */
 .protosem-panels{ position: relative; min-height: 320px; }
 
