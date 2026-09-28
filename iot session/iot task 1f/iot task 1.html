@@ -87,6 +87,8 @@
       border-radius: 10px;
       padding: 12px;
       text-align: center;
+      max-width: 264px;
+      margin: 20px auto;
     }
     .image-card img {
       width: 100%;
@@ -194,6 +196,10 @@
 
     <h2>5. Wiring / Setup</h2>
     <p>The LED is connected to a digital GPIO pin of the ESP32 through a current-limiting resistor.</p>
+    <figure class="image-card">
+      <img src="images/image2.jpg" alt="Breadboard and complete circuit setup">
+      <figcaption>Photo 2: Complete physical setup</figcaption>
+    </figure>
 
     <h3>Pin Connection</h3>
     <table>
@@ -302,6 +308,10 @@ void loop() {
   delay(1);
   client.stop();
 }</code></pre>
+    <figure class="image-card">
+      <img src="images/image3.jpg" alt="ESP32 web control circuit demonstration">
+      <figcaption>Photo 3: Hardware demonstration</figcaption>
+    </figure>
 
     <h3>Code Explanation</h3>
     <h4>Wi-Fi Library</h4>
@@ -334,6 +344,10 @@ const char* password = "YOUR_WIFI_PASSWORD";</pre>
 
     <h2>7. HTML Interface</h2>
     <p>The ESP32 generates a simple HTML webpage containing two control buttons.</p>
+    <figure class="image-card">
+      <img src="images/image1.jpg" alt="ESP32 and LED circuit setup">
+      <figcaption>Photo 1: ESP32 and LED circuit</figcaption>
+    </figure>
 
     <h3>Web Interface</h3>
     <p>The webpage contains:</p>
@@ -366,22 +380,6 @@ const char* password = "YOUR_WIFI_PASSWORD";</pre>
     <p>The browser and ESP32 must be connected to the same local network for this setup.</p>
 
     <h2>9. Evidence</h2>
-    <p><strong>Physical Setup</strong></p>
-    <div class="image-gallery">
-      <figure class="image-card">
-        <img src="images/image1.jpg" alt="ESP32 and LED circuit setup">
-        <figcaption>Photo 1: ESP32 and LED circuit</figcaption>
-      </figure>
-      <figure class="image-card">
-        <img src="images/image2.jpg" alt="Breadboard and complete circuit setup">
-        <figcaption>Photo 2: Complete physical setup</figcaption>
-      </figure>
-      <figure class="image-card">
-        <img src="images/image3.jpg" alt="ESP32 web control circuit demonstration">
-        <figcaption>Photo 3: Hardware demonstration</figcaption>
-      </figure>
-    </div>
-
     <p><strong>Web Interface Screenshots</strong></p>
     <p>The following screenshots were used to show the control page and LED states during testing.</p>
     <ul>
