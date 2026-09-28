@@ -38,6 +38,7 @@
         <li><a href="index.html">Home</a></li>
         <li><a href="#about">About Me</a></li>
         <li><a href="#protosem">Protosem</a></li>
+        <li><a href="#iot-session">IoT Session</a></li>
         <li><a href="#service">What I Can Help With</a></li>
         <li><a href="#portfolio">Projects</a></li>
         <li><a href="#contact">Contact</a></li>
@@ -322,8 +323,7 @@
           <div class="week-photos">
             <div class="photo-slot"><span>Photo</span></div>
             <div class="photo-slot"><span>Photo</span></div>
-            <div class="photo-slot"><span>Photo</span></div>
-          </div>
+           </div>
         </div>
         <div class="week-panel" id="week-17">
           <h3>Week 17</h3>
@@ -376,6 +376,17 @@
       </div>
     </div>
   </section><!-- #protosem -->
+  <section id="iot-session">
+    <h2 class="center">IoT Session</h2>
+    <p class="center iot-session-intro">Session notes, activities and resources will be added here.</p>
+    <div class="content iot-session-links">
+      <a class="iot-session-button" href="iot session/iot task 1f/iot task 1.html" target="_blank" rel="noopener">Open Session 1</a>
+      <a class="iot-session-button" href="iot session/iot task 2f/iot task 2.html" target="_blank" rel="noopener">Open Session 2</a>
+      <a class="iot-session-button" href="iot session/iot task3f/iot task 3.html" target="_blank" rel="noopener">Open Session 3</a>
+      <a class="iot-session-button" href="iot session/iot task 1f/iot task 1.html" target="_blank" rel="noopener">Open Session 4</a>
+      <a class="iot-session-button" href="iot session/iot task 2f/iot task 2.html" target="_blank" rel="noopener">Open Session 5</a>
+    </div>
+  </section><!-- #iot-session -->
   <script>
     (function(){
       var nav = document.getElementById('protosemNav');
@@ -407,7 +418,22 @@
           openPath = 'Weekly assignment/week2.html';
         }
 
+        if (week === '3') {
+          openPath = 'Weekly assignment/week 3.html';
+        }
+
         window.open(openPath, '_blank');
+      });
+
+      document.addEventListener('click', function(e){
+        var sessionBtn = e.target.closest('.iot-session-button');
+        if (!sessionBtn) return;
+
+        var href = sessionBtn.getAttribute('href');
+        if (!href || href === '#') return;
+
+        window.open(href, '_blank');
+        e.preventDefault();
       });
     })();
   </script>

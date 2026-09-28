@@ -389,6 +389,38 @@ h2.center{ margin-left: auto; margin-right: auto; }
 /* week panels — only the active one shows */
 .protosem-panels{ position: relative; min-height: 320px; }
 
+/* ---------------- IoT session ---------------- */
+
+#iot-session{ background: var(--mustard); }
+.iot-session-intro{ max-width: 620px; margin: 0 auto 32px; }
+.iot-session-links{
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+.iot-session-button{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 92px;
+  padding: 18px 24px;
+  border: 2px solid var(--ink);
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--label);
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-align: center;
+  text-transform: uppercase;
+  transition: background .2s ease, color .2s ease, transform .2s ease;
+}
+.iot-session-button:hover{
+  background: var(--ink);
+  color: var(--paper);
+  transform: translateY(-4px);
+}
+
 .week-panel{ display: none; }
 .week-panel.active{ display: block; }
 
@@ -751,6 +783,7 @@ h2.center{ margin-left: auto; margin-right: auto; }
     padding-bottom: 10px;
     margin-bottom: 20px;
   }
+  .iot-session-links{ grid-template-columns: 1fr; }
   .skill--content{ grid-template-columns: 1fr; }
   .skill--content .right{ grid-template-columns: repeat(2,1fr); }
   .service--content{ grid-template-columns: repeat(2,1fr); }
