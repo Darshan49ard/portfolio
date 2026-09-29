@@ -188,8 +188,14 @@ h2.center{ margin-left: auto; margin-right: auto; }
   border: none;
   cursor: pointer;
   padding: 6px;
+  color: var(--ink);
 }
-.hamburger img{ width: 26px; background: transparent; }
+.hamburger span{
+  display: inline-block;
+  font-size: 28px;
+  line-height: 1;
+  background: transparent;
+}
 
 /* ---------------- banner (hero) ---------------- */
 

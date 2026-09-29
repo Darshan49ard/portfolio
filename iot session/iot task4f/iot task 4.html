@@ -36,11 +36,16 @@
     .back-link { display: inline-block; margin: 24px 0 8px; padding: 10px 16px; border-radius: 6px; background: #1f6fb2; color: #ffffff; font-weight: 600; text-decoration: none; }
     .back-link:hover { background: #123a5b; }
     .back-link:focus-visible { outline: 3px solid #4a90e2; outline-offset: 3px; }
+    .evidence-gallery { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin: 20px 0; }
+    .evidence-gallery figure { min-width: 0; margin: 0; padding: 10px; border: 1px solid #dfeaf5; border-radius: 8px; background: #f8fbff; }
+    .evidence-gallery img { display: block; width: 100%; height: auto; border: 1px solid #dfeaf5; border-radius: 6px; }
+    .evidence-gallery figcaption { margin-top: 8px; color: #234b68; font-weight: 600; }
     @media (max-width: 700px) {
       body { padding: 12px; }
       main { padding: 22px 18px; }
       h1 { font-size: 1.8rem; }
       table { display: block; overflow-x: auto; }
+      .evidence-gallery { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -621,6 +626,24 @@ if (password.length &lt; 6) { msg.textContent = "The password is at least 6 char
     <li>History table and Export CSV button</li>
     <li>Layout on phone, tablet and desktop</li>
   </ul>
+  <div class="evidence-gallery" aria-label="Task 4 interface screenshots">
+    <figure>
+      <img src="Screenshot%202026-09-28%20234834.png" alt="Aeterna SmartHome IoT dashboard with sensor cards, appliance controls and historical charts" loading="lazy">
+      <figcaption>Dashboard overview</figcaption>
+    </figure>
+    <figure>
+      <img src="Screenshot%202026-09-28%20235452.png" alt="Aeterna SmartHome IoT sign-in screen" loading="lazy">
+      <figcaption>Sign-in screen</figcaption>
+    </figure>
+    <figure>
+      <img src="Screenshot%202026-09-28%20235520.png" alt="Aeterna SmartHome IoT create-account screen" loading="lazy">
+      <figcaption>Create account</figcaption>
+    </figure>
+    <figure>
+      <img src="Screenshot%202026-09-28%20235556.png" alt="Aeterna SmartHome IoT environmental scene selector" loading="lazy">
+      <figcaption>Environmental scene selector</figcaption>
+    </figure>
+  </div>
   <h3>Checks Performed</h3>
   <table><thead><tr><th>Check</th><th>Expected result</th></tr></thead><tbody>
     <tr><td>Landing page</td><td>Opens, and Sign in goes to the login page</td></tr>
