@@ -40,6 +40,14 @@
     .evidence-gallery figure { min-width: 0; margin: 0; padding: 10px; border: 1px solid #dfeaf5; border-radius: 8px; background: #f8fbff; }
     .evidence-gallery img { display: block; width: 100%; height: auto; border: 1px solid #dfeaf5; border-radius: 6px; }
     .evidence-gallery figcaption { margin-top: 8px; color: #234b68; font-weight: 600; }
+    .demonstration-video {
+      display: block;
+      width: 100%;
+      max-height: 620px;
+      margin: 20px 0;
+      background: #000;
+      border-radius: 8px;
+    }
     @media (max-width: 700px) {
       body { padding: 12px; }
       main { padding: 22px 18px; }
@@ -55,12 +63,12 @@
 
   <h2>1. Overview</h2>
   <h3>Objective</h3>
-  <p>The objective of this task is to build a responsive, three-page web dashboard for Forge using only HTML, CSS and JavaScript. The dashboard lets a user see sensor data (temperature, humidity, light) and control a bulb from any screen.</p>
+  <p>The goal of this task is to create a responsive three-page dashboard for Forge using HTML, CSS, and JavaScript. The dashboard allows users to view sensor readings and control a bulb from different screen sizes.</p>
   <h3>Problem Being Addressed</h3>
-  <p>In the earlier tasks, the ESP32 was controlled through a local web page, an Adafruit IO dashboard and Google Assistant. None of these gave Forge its own user interface. A user needs a single, clean place to sign in, watch live readings, switch the bulb, choose a mode and download the recorded data.</p>
-  <p>This task builds that interface on its own, before any hardware is connected. Firebase is wired in through a placeholder configuration file, and the real values are added in Task 5.</p>
+  <p>In earlier tasks, the ESP32 was controlled through a local web page, an Adafruit IO dashboard, and Google Assistant. None of these provided Forge with its own dedicated interface. This task creates a single, clean place for sign-in, live monitoring, bulb control, mode selection, and data download.</p>
+  <p>This interface is built before the hardware is connected. Firebase is set up through a placeholder configuration file, and the real values are added in Task 5.</p>
   <h3>Project Summary</h3>
-  <p>The project is a three-page web app: a landing page announcing Forge, a login page (email/password and Google Sign-In), and the dashboard. The dashboard shows live cards for temperature, humidity and light, an animated bulb toggle, a manual/automatic mode selector, a light-sensitivity slider, a history table and a one-click CSV export.</p>
+  <p>This project is a three-page web app: a landing page, a login page, and a dashboard. The dashboard displays live temperature, humidity, and light values, includes an animated bulb toggle, provides manual and automatic modes, has a light-sensitivity slider, shows a history table, and supports CSV export.</p>
   <p class="flow">Basic operation: User → Landing Page → Login Page → Dashboard → Firebase Realtime Database</p>
 
   <h2>2. Concepts</h2>
@@ -628,6 +636,10 @@ if (password.length &lt; 6) { msg.textContent = "The password is at least 6 char
   </ul>
   <div class="evidence-gallery" aria-label="Task 4 interface screenshots">
     <figure>
+      <img src="hardware-setup.jpg" alt="Hardware setup for the smart bulb automation system" loading="lazy">
+      <figcaption>Hardware setup</figcaption>
+    </figure>
+    <figure>
       <img src="Screenshot%202026-09-28%20234834.png" alt="Aeterna SmartHome IoT dashboard with sensor cards, appliance controls and historical charts" loading="lazy">
       <figcaption>Dashboard overview</figcaption>
     </figure>
@@ -652,6 +664,14 @@ if (password.length &lt; 6) { msg.textContent = "The password is at least 6 char
     <tr><td>Phone-sized window</td><td>Everything readable, nothing overflows</td></tr>
     <tr><td>Transitions</td><td>Smooth, and switched off with reduced motion</td></tr>
   </tbody></table>
+
+  <h3>Demonstration Video</h3>
+  <video class="demonstration-video" controls preload="auto" playsinline muted>
+    <source src="./iot%20task%204.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+  <p><a href="./iot%20task%204.mp4" target="_blank" rel="noopener">Open the video directly</a></p>
+
   <p>Because nothing is connected yet, the cards show <code>--</code> and the status says <em>Waiting</em>. This is expected in this task.</p>
   <p><strong>Screenshots:</strong> Task 4 — Web dashboard, Dashboard modes, History &amp; export, Responsive review.</p>
 

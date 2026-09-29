@@ -118,13 +118,13 @@
 
     <h2>1. Overview</h2>
     <h3>Objective</h3>
-    <p>The objective of this task is to develop a simple IoT system using an ESP32 microcontroller that hosts a web server and allows a user to control an LED through a web browser over Wi-Fi.</p>
+    <p>The aim of this task is to build a simple IoT system using an ESP32 that hosts a web server and allows a user to control an LED from a web browser over Wi-Fi.</p>
 
     <h3>Problem Being Addressed</h3>
-    <p>Normally, an LED connected to a microcontroller is controlled using a physical switch or programmed logic. This project demonstrates how the same device can be controlled remotely through a web interface without using a physical switch.</p>
+    <p>An LED connected to a microcontroller is usually controlled by a physical switch or by programmed logic. This project shows how the same LED can be switched on and off remotely through a browser without using a physical button.</p>
 
     <h3>Project Summary</h3>
-    <p>In this project, the ESP32 is connected to a Wi-Fi network and configured as a web server. When a user enters the ESP32's IP address in a browser, an HTML control page is displayed. The webpage contains ON and OFF buttons. When the user selects a button, the browser sends an HTTP request to the ESP32. The ESP32 processes the request and changes the LED state accordingly.</p>
+    <p>In this project, the ESP32 connects to a Wi-Fi network and acts as a small web server. When a user enters the ESP32's IP address into a browser, a simple HTML page appears with ON and OFF buttons. Pressing a button sends an HTTP request to the ESP32, which then updates the LED state accordingly.</p>
     <p><strong>Basic operation:</strong><br>Browser → Wi-Fi → ESP32 Web Server → GPIO → LED</p>
 
     <h2>2. Concepts</h2>
@@ -398,7 +398,7 @@ const char* password = "YOUR_WIFI_PASSWORD";</pre>
     </ul>
 
     <h3>Demonstration Video</h3>
-    <video class="demonstration-video" controls preload="auto" playsinline>
+    <video class="demonstration-video" controls preload="auto" playsinline muted>
       <source src="./iot%20task%20one.mp4" type="video/mp4">
       Your browser does not support the video tag.
     </video>
