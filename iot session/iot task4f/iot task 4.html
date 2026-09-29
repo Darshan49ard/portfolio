@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IoT Session — Task 4: Forge Web Dashboard</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 32px;
+      background: #f4f7fb;
+      color: #1e2a3a;
+      font: 16px/1.6 Arial, sans-serif;
+    }
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 30px 40px;
+      background: #ffffff;
+      border-radius: 14px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    }
+    h1, h2, h3, h4 { color: #123a5b; }
+    h1 { margin: 24px 0 12px; font-size: 2.2rem; text-align: center; }
+    h2 { margin-top: 32px; padding-bottom: 8px; border-bottom: 2px solid #dfeaf5; }
+    h3 { margin-top: 24px; }
+    p, li, td, th { color: #1e2a3a; }
+    table { width: 100%; margin: 18px 0; border-collapse: collapse; }
+    th, td { padding: 10px 12px; border: 1px solid #d7e3f0; text-align: left; vertical-align: top; }
+    th { background: #edf4fb; }
+    pre, code { font-family: Consolas, "Courier New", monospace; }
+    pre { overflow-x: auto; padding: 16px; border: 1px solid #dde7f1; border-radius: 6px; background: #f3f6f8; white-space: pre-wrap; overflow-wrap: anywhere; }
+    code { overflow-wrap: anywhere; }
+    .note { padding: 12px 16px; border-left: 5px solid #4a90e2; border-radius: 6px; background: #eef8ff; }
+    .flow { color: #234b68; font-weight: 600; }
+    .back-link { display: inline-block; margin: 24px 0 8px; padding: 10px 16px; border-radius: 6px; background: #1f6fb2; color: #ffffff; font-weight: 600; text-decoration: none; }
+    .back-link:hover { background: #123a5b; }
+    .back-link:focus-visible { outline: 3px solid #4a90e2; outline-offset: 3px; }
+    @media (max-width: 700px) {
+      body { padding: 12px; }
+      main { padding: 22px 18px; }
+      h1 { font-size: 1.8rem; }
+      table { display: block; overflow-x: auto; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <h1>IoT Session — Task 4: Forge Web Dashboard</h1>
+
+  <h2>1. Overview</h2>
+  <h3>Objective</h3>
+  <p>The objective of this task is to build a responsive, three-page web dashboard for Forge using only HTML, CSS and JavaScript. The dashboard lets a user see sensor data (temperature, humidity, light) and control a bulb from any screen.</p>
+  <h3>Problem Being Addressed</h3>
+  <p>In the earlier tasks, the ESP32 was controlled through a local web page, an Adafruit IO dashboard and Google Assistant. None of these gave Forge its own user interface. A user needs a single, clean place to sign in, watch live readings, switch the bulb, choose a mode and download the recorded data.</p>
+  <p>This task builds that interface on its own, before any hardware is connected. Firebase is wired in through a placeholder configuration file, and the real values are added in Task 5.</p>
+  <h3>Project Summary</h3>
+  <p>The project is a three-page web app: a landing page announcing Forge, a login page (email/password and Google Sign-In), and the dashboard. The dashboard shows live cards for temperature, humidity and light, an animated bulb toggle, a manual/automatic mode selector, a light-sensitivity slider, a history table and a one-click CSV export.</p>
+  <p class="flow">Basic operation: User → Landing Page → Login Page → Dashboard → Firebase Realtime Database</p>
+
+  <h2>2. Concepts</h2>
+  <h3>Dashboard</h3><p>The web page used to see the sensor data and control the bulb. Here it is a small three-page web app, built on its own before any hardware is connected.</p>
+  <h3>Three-Page Web App</h3><p>A landing page announcing Forge, a login page, and the dashboard itself.</p>
+  <h3>HTML, CSS and JavaScript</h3><p>The three languages of every web page: HTML is the structure, CSS is the look, JavaScript is the behaviour. Forge uses only these, with no framework.</p>
+  <h3>State Management</h3><p>Keeping track of what the page currently knows, for example whether the bulb toggle is a manual command or the automatic mode's decision.</p>
+  <h3>Mode Selector</h3><p>The control that switches between manual and automatic.</p>
+  <h3>Light-Sensitivity Slider</h3><p>The slider that sets the threshold (0–4095) used in automatic mode.</p>
+  <h3>History Table</h3><p>The list of the latest recorded readings.</p>
+  <h3>CSV Export</h3><p>One click downloads the recorded temperature, humidity and light as a spreadsheet file.</p>
+  <h3>Input Validation</h3><p>Checking what a user types before it is used, so bad values never reach the database.</p>
+  <h3>Loading and Error States</h3><p>What the page shows while data is still arriving, and what it says when something goes wrong, instead of a blank screen.</p>
+  <h3>Responsive CSS</h3><p>Styles that adapt to the screen size. The dashboard was tested on phone, tablet and desktop.</p>
+  <h3>Transition Animation</h3><p>A short smooth change between two states. Without it the toggle felt dead; with it the same response felt instant.</p>
+  <h3>Perceived Performance</h3><p>How fast something feels rather than how fast it is. Users do not care about the stack, they care that clicking ON turns the light on.</p>
+
+  <h2>3. System Design</h2>
+  <h3>System Architecture</h3>
+  <p>The complete system contains four major elements:</p>
+  <pre>User → Web Dashboard (Browser) → Firebase (Auth + Realtime Database) → ESP32 → Bulb</pre>
+  <p>In this task only the first two parts are built and checked. The Firebase and ESP32 connection is completed in Task 5.</p>
+  <h3>Data Flow</h3>
+  <ol>
+    <li>The user opens the landing page and selects <strong>Sign in</strong>.</li>
+    <li>The login page validates the email and password and signs in with Firebase Authentication (or Google).</li>
+    <li>If the user is already signed in, the login page redirects straight to the dashboard.</li>
+    <li>The dashboard checks the sign-in state and redirects to the login page if nobody is signed in.</li>
+    <li>Real-time listeners read the bulb state, settings and latest 20 readings from the database.</li>
+    <li>The page redraws cards, bulb, mode and history table whenever data changes.</li>
+    <li>The user toggles the bulb, changes the mode or moves the slider; the change is written to the database.</li>
+    <li>The user can export up to the latest 5000 readings as a CSV file.</li>
+  </ol>
+  <h3>Page Diagram</h3>
+  <pre>                 ┌──────────────────┐
+                 │   index.html     │
+                 │  Landing page    │
+                 └────────┬─────────┘
+                          │ Sign in
+                          ▼
+                 ┌──────────────────┐
+                 │   login.html     │
+                 │ Email / Google   │
+                 └────────┬─────────┘
+                          │ Signed in
+                          ▼
+                 ┌──────────────────┐
+                 │  dashboard.html  │
+                 │ Cards • Bulb •   │
+                 │ Mode • History   │
+                 └────────┬─────────┘
+                          │
+                          ▼
+                 ┌──────────────────┐
+                 │ Firebase Realtime│
+                 │    Database      │
+                 └──────────────────┘</pre>
+
+  <h2>4. Hardware &amp; Software</h2>
+  <h3>Hardware Components</h3>
+  <table><thead><tr><th>Component</th><th>Purpose</th></tr></thead><tbody>
+    <tr><td>Computer</td><td>Writing code and running the local server</td></tr>
+    <tr><td>Phone / tablet (or resized browser window)</td><td>Testing the responsive layout</td></tr>
+  </tbody></table>
+  <p>No ESP32 or sensor hardware is connected in this task. The DHT11 and LDR sensors and Firebase integration are added in Task 5.</p>
+  <h3>Software and Platforms</h3>
+  <table><thead><tr><th>Software / Platform</th><th>Purpose</th></tr></thead><tbody>
+    <tr><td>Visual Studio Code</td><td>Text editor for the project files</td></tr>
+    <tr><td>Google Chrome</td><td>Viewing and testing the pages</td></tr>
+    <tr><td>Python</td><td>Runs a small local web server</td></tr>
+    <tr><td>HTML, CSS, JavaScript</td><td>Structure, look and behaviour of the pages</td></tr>
+    <tr><td>Firebase (Authentication, Realtime Database)</td><td>Sign-in and live data (configured in Task 5)</td></tr>
+  </tbody></table>
+
+  <h2>5. Project Setup and Configuration</h2>
+  <h3>Step 1 — Create the Project Folder</h3>
+  <p>A folder named <code>forge-dashboard</code> was created containing six files.</p>
+  <pre>forge-dashboard/
+ ├ index.html          the landing page
+ ├ login.html          sign in
+ ├ dashboard.html      the live dashboard
+ ├ style.css           the look of all three
+ └ firebase-config.js  your Firebase settings</pre>
+  <h3>Step 2 — Add the Firebase Settings</h3>
+  <p><code>firebase-config.js</code> holds the <code>firebaseConfig</code> block that connects the dashboard to the Firebase project. The Firebase project is created in Task 5, so this file is saved with placeholder values for now and the real values are added later.</p>
+  <p class="note"><strong>Evidence to add:</strong> screenshot of the project folder in VS Code.</p>
+
+  <h2>6. Dashboard Configuration</h2>
+  <p>The dashboard is the main interface of the system and contains the following elements:</p>
+  <table><thead><tr><th>Element</th><th>Function</th></tr></thead><tbody>
+    <tr><td>Status line</td><td>Shows Connecting, Live (updated N s ago) or Device offline</td></tr>
+    <tr><td>Sensor cards</td><td>Temperature (°C), humidity (%), light (0–4095)</td></tr>
+    <tr><td>Bulb card</td><td>Animated bulb icon and ON/OFF toggle switch</td></tr>
+    <tr><td>Mode selector</td><td>Manual or Automatic</td></tr>
+    <tr><td>Light-sensitivity slider</td><td>Threshold from 0 to 4095 used in automatic mode</td></tr>
+    <tr><td>History table</td><td>Latest 20 readings: time, temperature, humidity, light, bulb</td></tr>
+    <tr><td>Export CSV button</td><td>Downloads up to the latest 5000 readings</td></tr>
+  </tbody></table>
+  <h3>Dashboard Operation</h3>
+  <ul>
+    <li><strong>Manual mode:</strong> the toggle shows and sets what the user asks for.</li>
+    <li><strong>Automatic mode:</strong> the toggle is disabled and shows what the relay is actually doing; the bulb switches on when the light reading is above the threshold.</li>
+    <li><strong>Slider:</strong> the value is validated to be between 0 and 4095 (the ESP32 ADC range) before it is saved.</li>
+  </ul>
+  <h3>Evidence</h3>
+  <ul>
+    <li>Screenshot 1: Three-page dashboard with live sensor cards and the animated bulb toggle</li>
+    <li>Screenshot 2: Manual/automatic mode selector and the light-sensitivity slider</li>
+    <li>Screenshot 3: History view with one-click CSV export</li>
+    <li>Screenshot 4: Responsive review on phone, tablet and desktop</li>
+  </ul>
+
+  <h2>7. Layout and Setup</h2>
+  <p>The interface is styled by one stylesheet shared by all three pages.</p>
+  <table><thead><tr><th>Feature</th><th>Behaviour</th></tr></thead><tbody>
+    <tr><td>Card grid</td><td>Three columns on desktop</td></tr>
+    <tr><td>Breakpoint</td><td>Below 760 px the cards stack into one column</td></tr>
+    <tr><td>Tables</td><td>Scroll horizontally inside their own container</td></tr>
+    <tr><td>Reduced motion</td><td>Transitions are switched off when the system requests reduced motion</td></tr>
+    <tr><td>Focus outlines</td><td>Visible outlines on inputs, buttons and the toggle for keyboard use</td></tr>
+  </tbody></table>
+  <h3>Local Server Setup</h3>
+  <p>The pages load scripts as modules, and browsers refuse this when a page is opened straight from a file. A local server is used:</p>
+  <pre>python -m http.server 8000</pre>
+  <p>Then open <code>http://localhost:8000</code> in Chrome.</p>
+
+  <h2>8. Application Flow</h2>
+  <pre>User
+ │
+ ▼
+Landing page ──► Login page ──► Firebase Authentication
+                                     │
+                                     ▼
+                                 Dashboard
+                                     │
+        ┌────────────────────────────┼───────────────────────────┐
+        ▼                            ▼                           ▼
+  Live listeners              Controls (write)             CSV export
+ (bulb, settings,          (toggle, mode, slider)       (latest 5000
+  latest readings)                                        readings)</pre>
+  <h3>Example — Bulb Toggle (Manual Mode)</h3>
+  <pre>User switches toggle ON
+       ↓
+Dashboard writes true to users/&lt;uid&gt;/bulb
+       ↓
+Real-time listener fires
+       ↓
+Page redraws: toggle ON, bulb glows, note "On (manual)"</pre>
+  <h3>Example — Automatic Mode</h3>
+  <pre>User selects Automatic
+       ↓
+Dashboard writes mode = "auto" to settings
+       ↓
+Toggle is disabled
+       ↓
+Bulb state follows the relay value in the latest reading</pre>
+
+  <h2>9. Data Structure</h2>
+  <p>The dashboard reads and writes under the signed-in user's own path:</p>
+  <pre>users/&lt;uid&gt;/bulb          true / false  (manual command)
+users/&lt;uid&gt;/settings      { mode: "manual" | "auto", threshold: 0–4095 }
+users/&lt;uid&gt;/readings/&lt;ts&gt; { temperature, humidity, light, relay }</pre>
+  <h3>Dashboard Parameters</h3>
+  <table><thead><tr><th>Parameter</th><th>Description</th></tr></thead><tbody>
+    <tr><td>Authentication</td><td>Email/password and Google Sign-In</td></tr>
+    <tr><td>Live reads</td><td>Bulb, settings, latest 20 readings</td></tr>
+    <tr><td>Writes</td><td>Bulb state, mode, threshold</td></tr>
+    <tr><td>Online check</td><td>Live if latest reading is under 15 s old</td></tr>
+    <tr><td>CSV columns</td><td><code>time_iso, unix_time, temperature_c, humidity_percent, light_0_4095, bulb</code></td></tr>
+  </tbody></table>
+
+  <h2>10. Implementation</h2>
+  <h3>Complete Source Code</h3>
+  <h4>firebase-config.js</h4>
+  <pre><code>// Paste YOUR values from Firebase Console &gt; Project settings &gt; General &gt; Your apps.
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getDatabase } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR-PROJECT.firebaseapp.com",
+  databaseURL: "https://YOUR-PROJECT-default-rtdb.firebaseio.com",
+  projectId: "YOUR-PROJECT",
+  appId: "YOUR_APP_ID"
+};
+
+export const app = initializeApp(firebaseConfig);
+export const auth = getAuth(app);
+export const db = getDatabase(app);</code></pre>
+  <h4>style.css</h4>
+  <pre><code>:root {
+  --bg: #0b0b0c; --card: #151517; --line: #2a2a2e; --text: #f2f0ef; --muted: #9a9a9f;
+  --accent: #dc4a15; --glow: #f1923e; --ok: #3ecf8e;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.5 system-ui, sans-serif; }
+a { color: inherit; }
+h1, h2, h3 { margin: 0; line-height: 1.15; }
+
+/* layout */
+.center { min-height: 100vh; display: grid; place-items: center; padding: 24px; }
+.wrap { max-width: 1000px; margin: 0 auto; padding: 24px 16px 64px; }
+.top { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 24px; }
+.grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.card, .panel { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 20px; }
+.panel { width: 100%; max-width: 380px; display: grid; gap: 14px; }
+.card small { color: var(--muted); text-transform: uppercase; letter-spacing: .08em; font-size: 12px; }
+.value { font-size: 44px; font-weight: 600; margin-top: 6px; font-variant-numeric: tabular-nums; }
+.value span { font-size: 18px; color: var(--muted); margin-left: 4px; }
+.row { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+section { margin-top: 14px; }
+
+/* forms + buttons */
+label { display: grid; gap: 6px; color: var(--muted); font-size: 14px; }
+input[type=email], input[type=password] { background: #0f0f10; border: 1px solid var(--line); border-radius: 10px; padding: 12px; color: var(--text); font: inherit; }
+input:focus-visible, button:focus-visible { outline: 2px solid var(--glow); outline-offset: 2px; }
+.btn { background: var(--text); color: #000; border: 0; border-radius: 999px; padding: 12px 22px; font: inherit; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-block; text-align: center; }
+.btn.ghost { background: transparent; color: var(--text); border: 1px solid var(--line); }
+.btn:disabled { opacity: .5; cursor: wait; }
+.msg { min-height: 1.4em; margin: 0; color: #ff7a59; font-size: 14px; }
+
+/* bulb + toggle */
+.bulb { width: 64px; height: 64px; fill: none; transition: filter .4s, opacity .4s, fill .4s; opacity: .35; }
+.bulb.on { opacity: 1; fill: rgba(241, 146, 62, .35); filter: drop-shadow(0 0 14px var(--glow)); }
+.switch { position: relative; display: inline-block; width: 64px; height: 34px; flex: none; }
+.switch input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; z-index: 1; }
+.switch i { position: absolute; inset: 0; background: #333; border-radius: 999px; transition: background .3s; }
+.switch i::after { content: ""; position: absolute; top: 4px; left: 4px; width: 26px; height: 26px; border-radius: 50%; background: #fff; transition: transform .3s; }
+.switch input:checked + i { background: var(--accent); }
+.switch input:checked + i::after { transform: translateX(30px); }
+.switch input:disabled { cursor: not-allowed; }
+.switch input:disabled + i { opacity: .45; }
+.switch input:focus-visible + i { outline: 2px solid var(--glow); outline-offset: 3px; }
+
+/* mode selector + slider */
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; padding: 3px; }
+.seg button { background: none; border: 0; color: var(--muted); padding: 8px 18px; border-radius: 999px; font: inherit; cursor: pointer; }
+.seg button[aria-pressed=true] { background: var(--text); color: #000; }
+input[type=range] { width: 100%; accent-color: var(--accent); }
+
+/* status + history */
+.status { color: var(--muted); font-size: 14px; }
+.status b { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #666; margin-right: 8px; }
+.status.live b { background: var(--ok); }
+.tablewrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; font-size: 14px; }
+th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+th { color: var(--muted); font-weight: 500; }
+
+/* phones and tablets */
+@media (max-width: 760px) { .grid { grid-template-columns: 1fr; } .value { font-size: 38px; } }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }</code></pre>
+  <h4>index.html</h4>
+  <pre><code>&lt;!doctype html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width,initial-scale=1"&gt;
+  &lt;title&gt;Forge&lt;/title&gt;
+  &lt;link rel="stylesheet" href="style.css"&gt;
+&lt;/head&gt;
+&lt;body class="center"&gt;
+  &lt;main style="text-align:center;max-width:560px"&gt;
+    &lt;h1 style="font-size:64px"&gt;Forge&lt;/h1&gt;
+    &lt;p style="color:var(--muted)"&gt;A live look at temperature, humidity and light, and one switch for the bulb - from any screen.&lt;/p&gt;
+    &lt;p&gt;&lt;a class="btn" href="login.html"&gt;Sign in&lt;/a&gt;&lt;/p&gt;
+  &lt;/main&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+  <h4>login.html</h4>
+  <pre><code>&lt;!doctype html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width,initial-scale=1"&gt;
+  &lt;title&gt;Forge - Sign in&lt;/title&gt;
+  &lt;link rel="stylesheet" href="style.css"&gt;
+&lt;/head&gt;
+&lt;body class="center"&gt;
+  &lt;form id="form" class="panel" novalidate&gt;
+    &lt;h1&gt;Sign in to Forge&lt;/h1&gt;
+    &lt;label&gt;Email
+      &lt;input id="email" type="email" autocomplete="email" required&gt;
+    &lt;/label&gt;
+    &lt;label&gt;Password
+      &lt;input id="password" type="password" autocomplete="current-password" required minlength="6"&gt;
+    &lt;/label&gt;
+    &lt;p id="msg" class="msg" role="alert"&gt;&lt;/p&gt;
+    &lt;button class="btn" id="signin" type="submit"&gt;Sign in&lt;/button&gt;
+    &lt;button class="btn ghost" id="google" type="button"&gt;Continue with Google&lt;/button&gt;
+  &lt;/form&gt;
+  &lt;script type="module"&gt;
+    import { auth } from "./firebase-config.js";
+    import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, onAuthStateChanged }
+      from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+    const $ = (id) =&gt; document.getElementById(id);
+    const msg = $("msg"), signin = $("signin"), google = $("google");
+
+    // already signed in? go straight to the dashboard
+    onAuthStateChanged(auth, (user) =&gt; { if (user) location.replace("dashboard.html"); });
+
+    const busy = (on) =&gt; { signin.disabled = google.disabled = on; signin.textContent = on ? "Signing in..." : "Sign in"; };
+    const friendly = (code) =&gt; ({
+      "auth/invalid-email": "That email address is not valid.",
+      "auth/invalid-credential": "Wrong email or password.",
+      "auth/user-not-found": "Wrong email or password.",
+      "auth/wrong-password": "Wrong email or password.",
+      "auth/too-many-requests": "Too many attempts. Wait a minute and try again.",
+      "auth/network-request-failed": "No connection. Check your internet and try again.",
+      "auth/popup-closed-by-user": "The Google window was closed before finishing."
+    })[code] || "Could not sign in. Please try again.";
+    const fail = (e) =&gt; { msg.textContent = friendly(e.code); busy(false); };
+
+    $("form").addEventListener("submit", (e) =&gt; {
+      e.preventDefault();
+      msg.textContent = "";
+      const email = $("email").value.trim(), password = $("password").value;
+      if (!/^\S+@\S+\.\S+$/.test(email)) { msg.textContent = "Enter a valid email address."; return; }
+      if (password.length &lt; 6) { msg.textContent = "The password is at least 6 characters."; return; }
+      busy(true);
+      signInWithEmailAndPassword(auth, email, password).catch(fail);
+    });
+
+    google.addEventListener("click", () =&gt; {
+      msg.textContent = "";
+      busy(true);
+      signInWithPopup(auth, new GoogleAuthProvider()).catch(fail);
+    });
+  &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+  <h4>dashboard.html</h4>
+  <pre><code>&lt;!doctype html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width,initial-scale=1"&gt;
+  &lt;title&gt;Forge - Dashboard&lt;/title&gt;
+  &lt;link rel="stylesheet" href="style.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class="wrap"&gt;
+  &lt;header class="top"&gt;
+    &lt;h1&gt;Forge&lt;/h1&gt;
+    &lt;div class="row"&gt;
+      &lt;span id="who" class="status"&gt;&lt;/span&gt;
+      &lt;button id="out" class="btn ghost" type="button"&gt;Sign out&lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/header&gt;
+  &lt;p id="status" class="status"&gt;&lt;b&gt;&lt;/b&gt;&lt;span&gt;Connecting...&lt;/span&gt;&lt;/p&gt;
+  &lt;p id="err" class="msg" role="alert"&gt;&lt;/p&gt;
+  &lt;div class="grid"&gt;
+    &lt;div class="card"&gt;&lt;small&gt;Temperature&lt;/small&gt;&lt;div class="value"&gt;&lt;em id="temp"&gt;--&lt;/em&gt;&lt;span&gt;&amp;deg;C&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;
+    &lt;div class="card"&gt;&lt;small&gt;Humidity&lt;/small&gt;&lt;div class="value"&gt;&lt;em id="hum"&gt;--&lt;/em&gt;&lt;span&gt;%&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;
+    &lt;div class="card"&gt;&lt;small&gt;Light (0-4095)&lt;/small&gt;&lt;div class="value"&gt;&lt;em id="light"&gt;--&lt;/em&gt;&lt;/div&gt;&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;section class="card"&gt;
+    &lt;div class="row"&gt;
+      &lt;div class="row" style="gap:16px"&gt;
+        &lt;svg id="bulb" class="bulb" viewBox="0 0 24 24" stroke="#f1923e" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"&gt;
+          &lt;path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.6 10.8c.6.5 1 1.2 1 2V16h5.2v-.2c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"/&gt;
+        &lt;/svg&gt;
+        &lt;div&gt;&lt;h2&gt;Bulb&lt;/h2&gt;&lt;div id="bulbNote" class="status"&gt;--&lt;/div&gt;&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;span class="switch"&gt;&lt;input id="toggle" type="checkbox" role="switch" aria-label="Bulb on or off"&gt;&lt;i&gt;&lt;/i&gt;&lt;/span&gt;
+    &lt;/div&gt;
+  &lt;/section&gt;
+  &lt;section class="card"&gt;
+    &lt;div class="row"&gt;
+      &lt;div&gt;&lt;h2&gt;Mode&lt;/h2&gt;&lt;div class="status"&gt;Manual follows the toggle. Automatic follows the light.&lt;/div&gt;&lt;/div&gt;
+      &lt;div class="seg" role="group" aria-label="Mode"&gt;
+        &lt;button type="button" data-mode="manual" aria-pressed="true"&gt;Manual&lt;/button&gt;
+        &lt;button type="button" data-mode="auto" aria-pressed="false"&gt;Automatic&lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div style="margin-top:18px"&gt;
+      &lt;div class="row"&gt;&lt;label for="range" style="display:inline"&gt;Light sensitivity (threshold)&lt;/label&gt;&lt;strong id="rangeOut"&gt;2000&lt;/strong&gt;&lt;/div&gt;
+      &lt;input id="range" type="range" min="0" max="4095" step="1" value="2000"&gt;
+      &lt;div class="status"&gt;In automatic mode the bulb switches on when the light reading is above this number.&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/section&gt;
+  &lt;section class="card"&gt;
+    &lt;div class="row" style="margin-bottom:12px"&gt;
+      &lt;h2&gt;History&lt;/h2&gt;
+      &lt;button id="csv" class="btn ghost" type="button"&gt;Export CSV&lt;/button&gt;
+    &lt;/div&gt;
+    &lt;div class="tablewrap"&gt;
+      &lt;table&gt;
+        &lt;thead&gt;&lt;tr&gt;&lt;th&gt;Time&lt;/th&gt;&lt;th&gt;Temp &amp;deg;C&lt;/th&gt;&lt;th&gt;Humidity %&lt;/th&gt;&lt;th&gt;Light&lt;/th&gt;&lt;th&gt;Bulb&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+        &lt;tbody id="rows"&gt;&lt;tr&gt;&lt;td colspan="5" class="status"&gt;Waiting for the first reading...&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;
+      &lt;/table&gt;
+    &lt;/div&gt;
+  &lt;/section&gt;
+&lt;/div&gt;
+
+&lt;script type="module"&gt;
+  import { auth, db } from "./firebase-config.js";
+  import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { ref, onValue, set, update, get, query, limitToLast } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+  const $ = (id) =&gt; document.getElementById(id);
+  let base = "", started = false;
+  let bulbWanted = false, mode = "manual", threshold = 2000, latest = null, history = [];
+
+  const say = (text) =&gt; { $("err").textContent = text || ""; };
+  const readError = () =&gt; say("Cannot read your data. Check that you are signed in and that the security rules are published.");
+  const writeError = () =&gt; say("That change could not be sent. Check your connection and try again.");
+  const num = (v, digits) =&gt; (typeof v === "number" &amp;&amp; isFinite(v)) ? v.toFixed(digits) : "--";
+
+  // sign in guard
+  onAuthStateChanged(auth, (user) =&gt; {
+    if (!user) { location.replace("login.html"); return; }
+    base = "users/" + user.uid;
+    $("who").textContent = user.email || "";
+    start();
+  });
+  $("out").addEventListener("click", () =&gt; signOut(auth));
+
+  // live listeners: the page updates itself when the data changes
+  function start() {
+    if (started) return;
+    started = true;
+    onValue(ref(db, base + "/bulb"), (snap) =&gt; { bulbWanted = snap.val() === true; render(); }, readError);
+    onValue(ref(db, base + "/settings"), (snap) =&gt; {
+      const v = snap.val() || {};
+      mode = v.mode === "auto" ? "auto" : "manual";
+      if (typeof v.threshold === "number") threshold = v.threshold;
+      render();
+    }, readError);
+    onValue(query(ref(db, base + "/readings"), limitToLast(20)), (snap) =&gt; {
+      const rows = [];
+      snap.forEach((child) =&gt; { rows.push({ ts: Number(child.key), ...child.val() }); });
+      rows.sort((a, b) =&gt; a.ts - b.ts);
+      history = rows;
+      latest = rows.length ? rows[rows.length - 1] : null;
+      render();
+    }, readError);
+    setInterval(renderStatus, 1000);
+  }
+
+  // drawing
+  function render() {
+    say("");
+    $("temp").textContent = latest ? num(latest.temperature, 1) : "--";
+    $("hum").textContent = latest ? num(latest.humidity, 0) : "--";
+    $("light").textContent = latest ? num(latest.light, 0) : "--";
+    const on = mode === "auto" ? !!(latest &amp;&amp; latest.relay) : bulbWanted;
+    $("toggle").checked = on;
+    $("toggle").disabled = mode === "auto";
+    $("bulb").classList.toggle("on", on);
+    $("bulbNote").textContent = mode === "auto" ? "Automatic - the light sensor decides" : (on ? "On (manual)" : "Off (manual)");
+    document.querySelectorAll("[data-mode]").forEach((b) =&gt; b.setAttribute("aria-pressed", String(b.dataset.mode === mode)));
+    if (document.activeElement !== $("range")) { $("range").value = threshold; $("rangeOut").textContent = threshold; }
+    const body = $("rows");
+    body.textContent = "";
+    if (!history.length) {
+      const tr = document.createElement("tr"), td = document.createElement("td");
+      td.colSpan = 5; td.className = "status"; td.textContent = "Waiting for the first reading...";
+      tr.append(td); body.append(tr);
+    }
+    history.slice().reverse().forEach((r) =&gt; {
+      const tr = document.createElement("tr");
+      [new Date(r.ts * 1000).toLocaleTimeString(), num(r.temperature, 1), num(r.humidity, 0), num(r.light, 0), r.relay ? "ON" : "OFF"]
+        .forEach((text) =&gt; { const td = document.createElement("td"); td.textContent = text; tr.append(td); });
+      body.append(tr);
+    });
+    renderStatus();
+  }
+
+  function renderStatus() {
+    const el = $("status");
+    if (!latest) { el.classList.remove("live"); el.lastChild.textContent = "Waiting for the first reading..."; return; }
+    const age = Math.max(0, Math.round(Date.now() / 1000 - latest.ts));
+    const live = age &lt; 15;
+    el.classList.toggle("live", live);
+    el.lastChild.textContent = live ? "Live - updated " + age + " s ago" : "Device offline - last reading " + (age &lt; 3600 ? Math.round(age / 60) + " min" : Math.round(age / 3600) + " h") + " ago";
+  }
+
+  // controls
+  $("toggle").addEventListener("change", (e) =&gt; {
+    if (mode === "auto") return;
+    set(ref(db, base + "/bulb"), e.target.checked).catch(writeError);
+  });
+  document.querySelectorAll("[data-mode]").forEach((b) =&gt; b.addEventListener("click", () =&gt; {
+    update(ref(db, base + "/settings"), { mode: b.dataset.mode }).catch(writeError);
+  }));
+  $("range").addEventListener("input", (e) =&gt; { $("rangeOut").textContent = e.target.value; });
+  $("range").addEventListener("change", (e) =&gt; {
+    const v = Math.round(Number(e.target.value));
+    if (!(v &gt;= 0 &amp;&amp; v &lt;= 4095)) return;
+    update(ref(db, base + "/settings"), { threshold: v }).catch(writeError);
+  });
+
+  // one-click CSV export (up to the latest 5000 readings)
+  $("csv").addEventListener("click", async () =&gt; {
+    const btn = $("csv");
+    btn.disabled = true;
+    try {
+      const snap = await get(query(ref(db, base + "/readings"), limitToLast(5000)));
+      const rows = [["time_iso", "unix_time", "temperature_c", "humidity_percent", "light_0_4095", "bulb"]];
+      snap.forEach((child) =&gt; {
+        const v = child.val();
+        rows.push([new Date(Number(child.key) * 1000).toISOString(), child.key, v.temperature, v.humidity, v.light, v.relay ? "ON" : "OFF"]);
+      });
+      if (rows.length === 1) { say("There are no readings to export yet."); return; }
+      const blob = new Blob([rows.map((r) =&gt; r.join(",")).join("\n")], { type: "text/csv" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "forge-readings.csv";
+      a.click();
+      URL.revokeObjectURL(a.href);
+    } catch (err) {
+      say("Could not export the data. Try again.");
+    } finally {
+      btn.disabled = false;
+    }
+  });
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+
+  <h2>11. Explanation of Important Code Sections</h2>
+  <h3>Sign-In Guard</h3>
+  <pre><code>onAuthStateChanged(auth, (user) =&gt; {
+  if (!user) { location.replace("login.html"); return; }
+  base = "users/" + user.uid;
+  start();
+});</code></pre>
+  <p>The dashboard redirects to the login page if nobody is signed in. Each user's data lives under their own <code>users/&lt;uid&gt;</code> path.</p>
+  <h3>Real-Time Listeners</h3>
+  <pre><code>onValue(ref(db, base + "/bulb"), (snap) =&gt; { bulbWanted = snap.val() === true; render(); }, readError);</code></pre>
+  <p><code>onValue</code> keeps the page up to date without a refresh. The same pattern is used for settings and the latest 20 readings.</p>
+  <h3>Manual vs Automatic State</h3>
+  <pre><code>const on = mode === "auto" ? !!(latest &amp;&amp; latest.relay) : bulbWanted;
+$("toggle").disabled = mode === "auto";</code></pre>
+  <p>In manual mode the toggle shows what the user asked for. In automatic mode it shows what the relay is actually doing and is disabled.</p>
+  <h3>Input Validation</h3>
+  <pre><code>if (!/^\S+@\S+\.\S+$/.test(email)) { msg.textContent = "Enter a valid email address."; return; }
+if (password.length &lt; 6) { msg.textContent = "The password is at least 6 characters."; return; }</code></pre>
+  <p>Bad values are caught on the page and a friendly message is shown, instead of sending them on.</p>
+  <h3>Loading and Error States</h3>
+  <pre><code>const readError = () =&gt; say("Cannot read your data. Check that you are signed in and that the security rules are published.");</code></pre>
+  <p>The status line shows Connecting, Waiting for the first reading, Live, or Device offline. Read and write failures show a clear message instead of a blank screen.</p>
+  <h3>Threshold Slider</h3>
+  <pre><code>if (!(v &gt;= 0 &amp;&amp; v &lt;= 4095)) return;</code></pre>
+  <p>The threshold is only saved when it lies inside the ESP32 ADC range.</p>
+  <h3>CSV Export</h3>
+  <pre><code>const snap = await get(query(ref(db, base + "/readings"), limitToLast(5000)));</code></pre>
+  <p>Reads up to the latest 5000 readings, builds a CSV file in the browser and downloads it as <code>forge-readings.csv</code>.</p>
+  <h3>Responsive and Reduced-Motion CSS</h3>
+  <pre><code>@media (max-width:760px){.grid{grid-template-columns:1fr}.value{font-size:38px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}</code></pre>
+  <p>Cards stack below 760 px, and transitions switch off when the system asks for reduced motion.</p>
+
+  <h2>12. Evidence</h2>
+  <h3>Interface Screenshots</h3>
+  <ul>
+    <li>Landing page and Sign in button</li>
+    <li>Login page with a friendly validation message</li>
+    <li>Dashboard with sensor cards, bulb toggle, mode selector, slider</li>
+    <li>History table and Export CSV button</li>
+    <li>Layout on phone, tablet and desktop</li>
+  </ul>
+  <h3>Checks Performed</h3>
+  <table><thead><tr><th>Check</th><th>Expected result</th></tr></thead><tbody>
+    <tr><td>Landing page</td><td>Opens, and Sign in goes to the login page</td></tr>
+    <tr><td>Login validation</td><td>Empty or badly typed email/password shows a friendly message</td></tr>
+    <tr><td>Narrow window</td><td>Cards stack into one column below 760 px</td></tr>
+    <tr><td>Phone-sized window</td><td>Everything readable, nothing overflows</td></tr>
+    <tr><td>Transitions</td><td>Smooth, and switched off with reduced motion</td></tr>
+  </tbody></table>
+  <p>Because nothing is connected yet, the cards show <code>--</code> and the status says <em>Waiting</em>. This is expected in this task.</p>
+  <p><strong>Screenshots:</strong> Task 4 — Web dashboard, Dashboard modes, History &amp; export, Responsive review.</p>
+
+  <h2>13. Challenges &amp; Fixes</h2>
+  <h3>Challenge 1 — Blank Page and Red Console Error</h3>
+  <p><strong>Problem:</strong> The page was blank with a red error in the browser console. <strong>Solution:</strong> The page had been opened straight from a file. It was run through the local server and opened at <code>http://localhost:8000</code>.</p>
+  <h3>Challenge 2 — Styling Missing</h3>
+  <p><strong>Problem:</strong> The pages appeared without styling. <strong>Solution:</strong> <code>style.css</code> was not in the same folder as the pages. All six files were kept together in <code>forge-dashboard</code>.</p>
+  <h3>Challenge 3 — Nothing Clickable</h3>
+  <p><strong>Problem:</strong> Nothing on the page responded to clicks. <strong>Solution:</strong> A script had failed to load. The browser console was opened and the first red error was read and fixed.</p>
+  <h3>Challenge 4 — Dashboard Felt Broken Without Animation</h3>
+  <p><strong>Problem:</strong> The first version of the dashboard had no transition animations, and a plain instant switch felt dead. <strong>Solution:</strong> Smooth transitions were added to the bulb and toggle. A response that took a full second then felt instant, while a 10x faster change with no feedback felt sluggish.</p>
+
+  <h2>14. Learning Reflection</h2>
+  <p>This task made me think about users for the first time. Underneath the simple three-page interface sat real complexity: Firebase listeners, state management, validation, error handling and responsive layouts. The whole point was that nobody should ever see it. People just want the cards to update, the toggle to feel smooth, the mode switch to do the right thing, and the export button to give them their data.</p>
+  <p>My favourite lesson came from an animation. The version without transitions felt broken, and the version with them felt instant even though it was technically slower. This taught me more about perceived performance than any optimization guide: users do not care about the stack, they care that clicking ON turns the light on, and great engineering is the part they never see.</p>
+  <p>I measured, tested on phone, tablet and desktop, and kept a performance bar in mind the whole time. By the end the dashboard felt like a real product, not a class demo.</p>
+  <p>The task improved my understanding of HTML, CSS and JavaScript, state management, input validation, loading and error states, responsive design, transition animation and perceived performance.</p>
+
+  <h2>15. Repository</h2>
+  <p>The complete source code, configuration information, screenshots and documentation are available in the project repository.</p>
+  <p><strong>Repository:</strong> [ADD YOUR GITHUB REPOSITORY LINK HERE]</p>
+  <h3>Recommended Repository Structure</h3>
+  <pre>Task-4-Forge-Web-Dashboard/
+│
+├── forge-dashboard/
+│   ├── index.html
+│   ├── login.html
+│   ├── dashboard.html
+│   ├── style.css
+│   └── firebase-config.js
+├── README.md
+│
+├── screenshots/
+│   ├── web-dashboard.png
+│   ├── dashboard-modes.png
+│   ├── history-export.png
+│   └── responsive-review.png
+│
+└── video/
+    └── demo-link.txt</pre>
+
+  <h2>Final Result</h2>
+  <p>The completed task delivers a clean three-page web dashboard for Forge built in plain HTML, CSS and JavaScript: a landing page, a login page with email/password and Google Sign-In, and a dashboard with live sensor cards, an animated bulb toggle, a manual/automatic mode selector, a light-sensitivity slider, a history table and one-click CSV export.</p>
+  <p><strong>Final System:</strong></p>
+  <pre>Landing Page → Login → Dashboard → Firebase Realtime Database → ESP32 → Bulb</pre>
+  <p>The interface is complete and tested on phone, tablet and desktop. In Task 5 the DHT11 and LDR sensors and Firebase Realtime Database are connected so live data arrives on this dashboard.</p>
+
+  <h3>Navigation</h3>
+  <p><strong>Previous:</strong> <a href="../iot%20task3f/iot%20task%203.html">Task 03 — Google Assistant Voice Control via IFTTT</a></p>
+  <p><strong>Next:</strong> Task 05 — Forge: Firebase &amp; Real-Time Integration</p>
+  <a class="back-link" href="../../index.html#iot-session">Back to previous tab</a>
+</main>
+</body>
+</html>
