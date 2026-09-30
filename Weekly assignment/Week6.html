@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Week 6 – Figma, UI/UX Development & Design Practice</title>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --panel: rgba(255,255,255,0.96);
+      --text: #1f2937;
+      --muted: #5e697a;
+      --accent: #2563eb;
+      --accent-2: #0ea5e9;
+      --line: #e5e7eb;
+      --shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+      --soft-blue: #eaf2ff;
+      --soft-green: #ebfaf5;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(135deg, #edf4ff 0%, #f7fafc 100%);
+      color: var(--text);
+    }
+
+    .page {
+      max-width: 1180px;
+      margin: 36px auto;
+      padding: 34px 30px 48px;
+      background: var(--panel);
+      border: 1px solid rgba(255,255,255,0.82);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .hero {
+      border-bottom: 2px solid var(--line);
+      padding-bottom: 18px;
+      margin-bottom: 26px;
+    }
+
+    .eyebrow {
+      margin: 0 0 10px;
+      font-size: 12px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2.2rem, 3.4vw, 3.5rem);
+      line-height: 1.08;
+      font-weight: 700;
+      font-style: italic;
+      text-decoration: underline;
+      text-decoration-thickness: 2px;
+      text-underline-offset: 10px;
+      color: #111827;
+    }
+
+    .intro {
+      margin-top: 18px;
+      font-size: 1.08rem;
+      line-height: 1.8;
+      color: var(--muted);
+      max-width: 930px;
+    }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 22px;
+      margin-top: 28px;
+    }
+
+    .panel,
+    .highlight,
+    .photo-card,
+    .reflection {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      overflow: hidden;
+    }
+
+    .panel {
+      padding: 22px 20px;
+    }
+
+    .panel ul {
+      margin: 0;
+      padding-left: 24px;
+      line-height: 2;
+      font-size: 1rem;
+      color: var(--text);
+    }
+
+    .highlight {
+      padding: 22px 20px;
+      background: linear-gradient(135deg, rgba(37,99,235,0.06), rgba(14,165,233,0.08));
+    }
+
+    .highlight h3 {
+      margin: 0 0 12px;
+      color: var(--accent);
+      font-size: 1.08rem;
+    }
+
+    .highlight p {
+      margin: 0;
+      line-height: 1.8;
+      color: var(--text);
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(180px, 1fr));
+      gap: 18px;
+      margin-top: 22px;
+    }
+
+    .photo-card {
+      box-shadow: 0 12px 20px rgba(15, 23, 42, 0.05);
+    }
+
+    .photo-box {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 250px;
+      font-size: 0.95rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--accent);
+      background: linear-gradient(135deg, #edf4ff 0%, #eefcf9 100%);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .photo-card figcaption {
+      padding: 12px 14px 16px;
+      font-size: 0.92rem;
+      line-height: 1.5;
+      color: var(--muted);
+      background: #fff;
+    }
+
+    .reflection {
+      margin-top: 28px;
+      padding: 22px 20px;
+      background: linear-gradient(135deg, rgba(14,165,233,0.05), rgba(20,184,166,0.06));
+    }
+
+    p {
+      margin: 0 0 18px;
+      font-size: 1.02rem;
+      line-height: 1.85;
+      color: var(--text);
+      text-align: justify;
+    }
+
+    @media (max-width: 820px) {
+      .page {
+        margin: 18px 12px;
+        padding: 24px 16px 32px;
+      }
+      .content-grid, .gallery {
+        grid-template-columns: 1fr;
+      }
+      p { font-size: 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="hero">
+      <p class="eyebrow">Week 6</p>
+      <h1>Figma, UI/UX Development &amp; Design Practice</h1>
+      <p class="intro">
+        This week focused on using Figma to explore digital design and translate ideas into practical, user-friendly interfaces. The session helped connect creativity with usability, turning rough concepts into structured layout decisions and interaction-ready designs.
+      </p>
+    </header>
+
+    <section class="content-grid">
+      <div class="panel">
+        <ul>
+          <li>Worked with Figma to create and refine user interface ideas.</li>
+          <li>Explored how visual hierarchy, spacing, and layout affect usability.</li>
+          <li>Learned the importance of thinking from the user perspective during design decisions.</li>
+          <li>Practiced turning design concepts into interactive, cleaner digital experiences.</li>
+        </ul>
+      </div>
+
+      <div class="highlight">
+        <h3>Big takeaway</h3>
+        <p>
+          Good UI/UX design is not only about appearance. It is about making the experience intuitive, efficient, and helpful for the user while keeping the design clear and engaging.
+        </p>
+      </div>
+    </section>
+
+    <section class="gallery" aria-label="Week 6 highlights">
+      <figure class="photo-card">
+        <div class="photo-box">Figma Layout</div>
+        <figcaption>Designed interface ideas and structured layout decisions with clarity and consistency.</figcaption>
+      </figure>
+
+      <figure class="photo-card">
+        <div class="photo-box">UX Flow</div>
+        <figcaption>Focused on user needs, flow, and interaction to improve the overall experience.</figcaption>
+      </figure>
+
+      <figure class="photo-card">
+        <div class="photo-box">Design Review</div>
+        <figcaption>Reviewed design choices to improve readability, simplicity, and user confidence.</figcaption>
+      </figure>
+    </section>
+
+    <div class="reflection">
+      <p>
+        Week 6 helped me understand that design is a combination of creativity and structure. By using Figma and focusing on UI/UX principles, I gained a better understanding of how digital experiences are shaped and improved through thoughtful decisions, user awareness, and iteration.
+      </p>
+    </div>
+  </div>
+</body>
+</html>
